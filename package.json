@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "web3": "^4.16.0"
+  },
+  "name": "ai-model-marketplace-dapp",
+  "version": "1.0.0",
+  "description": "Create a decentralized application that allows users to list, purchase, and rate AI models. The smart contract should manage the core functionality, while the frontend should provide an intuitive interface for users to interact with the contract.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
