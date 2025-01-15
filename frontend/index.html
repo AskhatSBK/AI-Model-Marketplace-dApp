@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Model Marketplace</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+  <script src="./script.js" defer></script>
+</head>
+<body>
+  <h1>AI Model Marketplace</h1>
+
+  <!-- Form to list a new model -->
+  <section>
+    <h2>List a New Model</h2>
+    <form id="listModelForm">
+      <input type="text" id="modelName" placeholder="Model Name" required>
+      <input type="text" id="modelDescription" placeholder="Model Description" required>
+      <input type="number" id="modelPrice" placeholder="Price (ETH)" required>
+      <button type="submit">List Model</button>
+    </form>
+  </section>
+
+  <!-- Section to display available models -->
+  <section>
+    <h2>Available Models</h2>
+    <div id="modelList"></div>
+  </section>
+</body>
+</html>
