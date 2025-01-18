@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="logo.png" type="image/x-icon">
+
+<style>
+    body {
+        font-family: 'Abhaya Libre', serif;
+        color: #8f2c9a;
+        margin: 0; 
+        overflow-x: hidden; 
+        transition: background-color 0.3s, color 0.3s; 
+    }
+          
+    #background-cubes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        perspective: 1000px;
+        overflow: hidden;
+    }
+    
+    .cube {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(145deg, #9F70FF, #7030D0);
+        transform-style: preserve-3d;
+        animation: float 10s infinite ease-in-out;
+    }
+    
+    .cube::before, .cube::after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: inherit;
+    }
+    
+    .cube::before {
+        transform: rotateY(90deg) translateZ(25px);
+    }
+    
+    .cube::after {
+        transform: rotateX(90deg) translateZ(25px);
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translate3d(0, 0, 0) rotateX(0) rotateY(0);
+        }
+        50% {
+            transform: translate3d(100px, -100px, 100px) rotateX(180deg) rotateY(180deg);
+        }
+        100% {
+            transform: translate3d(0, 0, 0) rotateX(360deg) rotateY(360deg);
+        }
+    }
+    
+    .navbar {
+        z-index: 1030;
+        position: relative;
+    }
+    
+    .navbar-nav .nav-link {
+        font-family: 'Abhaya Libre', serif;
+        color: #ea8a15;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+    
+    header {
+        margin: 0;
+        background: linear-gradient(135deg, #9338cb, #8d2cd3, #a05ab9);
+        min-height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 5%;
+        color: #ea9b12;
+        position: relative;
+    }
+    
+    .navbar-nav .nav-link:hover {
+        text-decoration: underline;
+    }
+    
+
+    .header-text {
+        max-width: 50%;
+        margin-left: 20px;
+    }
+    
+    .container-fluid {
+        max-width: 1200px;
+    }
+    
+    h1 {
+        font-size: 120px;
+    }
+
+.btn {
+    display: block;
+    font-size: 17px;
+    text-align: center;
+    letter-spacing: 0.1em;
+    padding: 17px 47px;
+    border: 1px solid #e37a10;
+    width: 238px;
+    background-color: #9e59c1; 
+    color: #fff; 
+    transition: all 0.3s ease-in-out;
+    transform: scale(1); 
+    position: relative; 
+    z-index: 10; 
+}
+
+.btn:hover {
+    background-color: #ea8a15; 
+    color: #000; 
+    border-color: #ea8a15; 
+    transform: scale(1.1); 
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+header {
+    position: relative; 
+}
+
+
+    
+    .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        height: 100vh;
+        position: relative;
+    }
+
+    #background-cubes .cube {
+        width: 60px;
+        height: 60px;
+    }
+
+    #background-cubes .cube:nth-child(1) { top: 20%; left: 10%; }
+    #background-cubes .cube:nth-child(2) { top: 40%; left: 20%; }
+    #background-cubes .cube:nth-child(3) { top: 60%; left: 30%; }
+    #background-cubes .cube:nth-child(4) { top: 80%; left: 40%; }
+    #background-cubes .cube:nth-child(5) { top: 25%; left: 50%; }
+    #background-cubes .cube:nth-child(6) { top: 35%; left: 60%; }
+    #background-cubes .cube:nth-child(7) { top: 45%; left: 70%; }
+    #background-cubes .cube:nth-child(8) { top: 55%; left: 80%; }
+</style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#9e59c1;">
+        <div class="container-fluid">
+            <a class="navbar-brand active" href="index.html">
+                <img src="logo.png" width="50px" alt="logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" href="AvailableModels.html">Available Models</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" href="AddYourOwnModel.html">Add Your Own Model!</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" href="WithdrawFunds.html">Withdraw Funds</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="header">
+        <div class="header-text">
+            <p class="fs-4">Unlock the Power of AI</p>
+            <h1 class="mb-4">AI Model Marketplace</h1>
+            <p class="fs-4">Buy, Create, and Rate the Future of Technology</p>
+            <a href="AvailableModels.html" class="btn">Get Started -></a>
+        </div>
+
+        <div id="background-cubes">
+            <div class="cube" style="top: 20%; left: 40.5%;"></div>
+            <div class="cube" style="top: 40%; left: 42.5%;"></div>
+            <div class="cube" style="top: 37%; left: 52%;"></div>
+            <div class="cube" style="top: 60%; left: 45%;"></div>
+            <div class="cube" style="top: 70%; left: 50%;"></div>
+            <div class="cube" style="top: 25%; left: 50%;"></div>
+            <div class="cube" style="top: 35%; left: 60%;"></div>
+            <div class="cube" style="top: 45%; left: 70%;"></div>
+            <div class="cube" style="top: 55%; left: 75%;"></div>
+            <div class="cube" style="top: 65%; left: 70%;"></div>
+            <div class="cube" style="top: 55%; left: 55%;"></div>
+            <div class="cube" style="top: 55%; left: 65%;"></div>
+            <div class="cube" style="top: 65%; left: 60%;"></div>
+
+        </div>
+    </header>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

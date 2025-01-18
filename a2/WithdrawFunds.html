@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Funds</title>
+    <link href="https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="logo.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Abhaya Libre', serif;
+            color: #8f2c9a;
+            margin: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+            }
+        .navbar {
+            z-index: 1030;
+            position: relative;
+            }
+                
+        .navbar-nav .nav-link {
+            font-family: 'Abhaya Libre', serif;
+            color: #ea8a15;
+            font-weight: 600;
+            font-size: 1.2rem;
+            }
+                
+        header {
+            margin: 0;
+            padding: 10;
+            background: linear-gradient(135deg, #9338cb, #8d2cd3, #a05ab9);
+            min-height: 100vh;
+            color: #ea9b12;
+            position: relative;
+            }
+                
+        .navbar-nav .nav-link:hover {
+            text-decoration: underline;
+            }
+                
+        .container-fluid {
+            max-width: 1200px;
+            }
+        
+        h1 {
+            text-align: center;
+            font-size: 50px;
+        }
+
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .model-info {
+            margin: 20px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            font-size: 15px;
+            padding: 10px 20px;
+            background-color: #81c159;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #ea8a15;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 50px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            font-size: 15px;
+            padding: 10px 20px;
+            background-color: #81c159;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #ea8a15;
+        }
+
+        .balance-info {
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#9e59c1;">
+        <div class="container-fluid">
+        <a class="navbar-brand active" href="index.html">
+            <img src="logo.png" width="50px" alt="logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> 
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+        <li class="nav-item"> 
+            <a class="nav-link fs-5" href="AvailableModels.html">Available Models</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fs-5" href="AddYourOwnModel.html">Add Your Own Model!</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fs-5" href="WithdrawFunds.html">Withdraw Funds</a>
+        </li>
+        </ul>
+    </div></div>
+    </nav>
+<header>
+    <h1>Withdraw Funds</h1>
+    <div class="container">
+        <div class="balance-info" id="balanceInfo">Loading balance...</div>
+        <button class="btn" onclick="withdrawFunds()">Withdraw Funds</button>
+    </div>
+    
+</header>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.0/dist/web3.min.js"></script>
+
+    <script>
+        let contract;
+    
+        // Initialize the contract
+        async function loadContract() {
+            const web3 = new Web3(window.ethereum);
+            const response = await fetch('./contractABI.json');
+            const abi = await response.json();
+            const contractAddress = "0x2A4fF8a6192401d45A921aaFe1Ace3b21900D96C"; 
+            contract = new web3.eth.Contract(abi, contractAddress);
+        }
+    
+        // Fetch and display the balance
+        async function getBalance() {
+            try {
+                const web3 = new Web3(window.ethereum);
+                const balance = await web3.eth.getBalance(contract.options.address);
+                document.getElementById('balanceInfo').innerText = `Available Balance: ${web3.utils.fromWei(balance, 'ether')} ETH`;
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+                alert("Failed to fetch balance.");
+            }
+        }
+    
+        // Withdraw funds
+        async function withdrawFunds() {
+            try {
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                console.log("Attempting to withdraw funds with account:", accounts[0]);
+    
+                await contract.methods.withdrawFunds().send({ from: accounts[0] });
+    
+                alert("Funds withdrawn successfully!");
+                getBalance(); // Refresh the balance
+            } catch (error) {
+                console.error("Error during withdrawal:", error);
+                alert("Failed to withdraw funds.");
+            }
+        }
+    
+        // Initialize the contract and fetch balance on page load
+        window.onload = async () => {
+            if (typeof window.ethereum !== "undefined") {
+                await loadContract();
+                await getBalance();
+            } else {
+                alert("Please install MetaMask to interact with the application!");
+            }
+        };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
