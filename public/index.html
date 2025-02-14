@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Model Marketplace</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.6.1/web3.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #E0E0E0;
+        }
+
+        header {
+            background: #1E1E1E;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        #walletAddress, #tokenBalance {
+            font-size: 16px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: #222;
+        }
+
+        #connectButton, #refreshBalanceButton {
+            padding: 12px 20px;
+            background: #6200EA;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.3s;
+            color: white;
+        }
+
+        #connectButton:hover, #refreshBalanceButton:hover {
+            background: #3700B3;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #1E1E1E;
+            border-radius: 12px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        #models-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .model-item {
+            background: #292929;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            width: 300px;
+            text-align: center;
+        }
+
+        .model-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(98, 0, 234, 0.3);
+        }
+
+        button {
+            background: #03DAC6;
+            color: #121212;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #018786;
+        }
+
+        form {
+            background: #292929;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: none;
+            background: #333;
+            color: white;
+        }
+
+        ::placeholder {
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="walletAddress">Wallet not connected</div>
+        <div id="tokenBalance">Token Balance: 0 ABA</div>
+        <button id="refreshBalanceButton">Refresh Balance</button>
+        <button id="connectButton">Connect MetaMask</button>
+    </header>
+
+    <main>
+        <h1>AI Models Marketplace</h1>
+        <div id="models-list"></div>
+
+        <h2>Create a Model Listing</h2>
+        <form id="create-model-form">
+            <input type="text" id="model-name" placeholder="Model Name" required>
+            <textarea id="model-description" placeholder="Model Description" required></textarea>
+            <input type="number" id="model-price" placeholder="Price in ABA" required>
+            <input type="file" id="model-file" required>
+            <button type="submit">Create Listing</button>
+        </form>
+    </main>
+
+    <script>
+
+let tokenAddress;
+let tokenABI;
+let web3;
+let account;
+
+async function loadConfig() {
+    const response = await fetch('/api/config');
+    const data = await response.json();
+    tokenAddress = data.tokenAddress;
+    tokenABI = data.tokenABI;
+}
+
+window.onload = async function () {
+    await loadConfig();
+    loadModels();
+};
+
+
+
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      web3 = new Web3(window.ethereum);
+      const accounts = await web3.eth.getAccounts();
+      if (accounts.length > 0) {
+        account = accounts[0];
+        document.getElementById('walletAddress').textContent = `Wallet Address: ${account}`;
+        await getTokenBalance(account);
+      } else {
+        alert("No accounts found. Please unlock your MetaMask wallet.");
+      }
+    } catch (error) {
+      alert("Failed to connect to MetaMask. Please try again.");
+    }
+  } else {
+    alert("MetaMask is not installed. Please install MetaMask.");
+  }
+}
+
+async function getTokenBalance(account) {
+  const contract = new web3.eth.Contract(tokenABI, tokenAddress);
+  try {
+    const balance = await contract.methods.balanceOf(account).call();
+    const tokenBalance = web3.utils.fromWei(balance, 'ether');
+    document.getElementById('tokenBalance').textContent = `Token Balance: ${tokenBalance} ABA`;
+  } catch (error) {
+    document.getElementById('tokenBalance').textContent = "Token Balance: Error fetching balance";
+  }
+}
+
+document.getElementById('connectButton').addEventListener('click', connectWallet);
+
+window.ethereum.on('accountsChanged', (accounts) => {
+  if (accounts.length > 0) {
+    document.getElementById('walletAddress').textContent = `Wallet Address: ${accounts[0]}`;
+    getTokenBalance(accounts[0]);
+  } else {
+    alert('MetaMask account disconnected!');
+    document.getElementById('walletAddress').textContent = 'Wallet Address: Not connected';
+    document.getElementById('tokenBalance').textContent = 'Token Balance: 0 ABA';
+  }
+});
+
+async function createModelListing(event) {
+  event.preventDefault();
+  const modelName = document.getElementById("model-name").value;
+  const modelDescription = document.getElementById("model-description").value;
+  const modelPrice = document.getElementById("model-price").value;
+  const modelFile = document.getElementById("model-file").files[0];
+  const sellerAddress = account;
+
+  if (!sellerAddress) {
+    alert("Please connect your wallet first.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", modelName);
+  formData.append("description", modelDescription);
+  formData.append("price", modelPrice);
+  formData.append("file", modelFile);
+  formData.append("seller", sellerAddress);
+
+  const response = await fetch("/api/createModel", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (response.ok) {
+    alert("Model listed successfully!");
+    loadModels();
+  } else {
+    alert("Error listing model!");
+  }
+}
+
+document.getElementById("create-model-form").addEventListener("submit", createModelListing);
+
+async function loadModels() {
+  const response = await fetch("/api/getModels");
+  const models = await response.json();
+  const modelsList = document.getElementById("models-list");
+
+  modelsList.innerHTML = "";
+
+  models.forEach(model => {
+    const modelItem = document.createElement("div");
+    modelItem.classList.add("model-item");
+    modelItem.innerHTML = `
+    <h3>${model.name}</h3>
+    <p>${model.description}</p>
+    <p>Price: ${model.price} ABA</p>
+    <p>Seller: ${model.seller}</p>
+    <p>Status: ${model.status}</p>
+    ${model.status === 'available' ?
+        `<button onclick="buyModel('${model.seller}', '${model.price}', '${model.id}')">Buy</button>` :
+        `<button disabled>Sold</button>`
+    }
+  `;
+    modelsList.appendChild(modelItem);
+  });
+}
+
+async function buyModel(sellerAddress, amount, modelId) {
+  try {
+    const amountInWei = web3.utils.toWei(amount, 'ether');
+    const accounts = await web3.eth.getAccounts();
+    const buyer = accounts[0];
+
+    if (buyer.toLowerCase() === sellerAddress.toLowerCase()) {
+      alert("You cannot buy your own model.");
+      return;
+    }
+
+    const contract = new web3.eth.Contract(tokenABI, tokenAddress);
+    await contract.methods.transfer(sellerAddress, amountInWei).send({ from: buyer });
+
+    // Update the model status to sold in the backend
+    const response = await fetch('/api/markAsSold', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ modelId }),  // Ensure modelId is passed correctly
+    });
+
+    if (response.ok) {
+      alert("Purchase successful! The model is now marked as sold.");
+      loadModels(); // Reload models after purchase
+    } else {
+      const errorData = await response.json();
+      alert(`Failed to update model status to sold: ${errorData.error}`);
+    }
+  } catch (error) {
+    alert('Transaction failed: ' + error.message);
+  }
+}
+
+
+
+window.onload = loadModels;
+    </script>
+</body>
+</html>
